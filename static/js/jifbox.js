@@ -62,7 +62,10 @@
     count++;
     if (count === 12) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
+      start = new Date
       gif.render();
+      total = new Date - start
+      console.log('Took ' + total + ' miliseconds to run')
     }
 
     count = count % 12;
