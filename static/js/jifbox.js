@@ -7,7 +7,8 @@
       startbutton  = document.querySelector('button#snap'),
       width = 320,
       height = 0,
-      count = -1;
+      count = -1,
+      start;
 
   var gif = new GIF({
     workers: 2,
@@ -64,8 +65,7 @@
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
       start = new Date
       gif.render();
-      total = new Date - start
-      console.log('Took ' + total + ' miliseconds to run')
+      
     }
 
     count = count % 12;
@@ -76,6 +76,8 @@
 
   gif.on('finished', function(blob) {
     document.querySelector('#jif').src = URL.createObjectURL(blob);
+    total = new Date - start
+    console.log('Took ' + total + ' miliseconds to run')
   });
 
   startbutton.addEventListener('click', function(ev){
