@@ -60,7 +60,7 @@
   }
 
   function gifit() {
-
+    start = new Date;
     var encoder = new GIFEncoder();
     encoder.setRepeat(0);
     encoder.setDelay(150);
@@ -80,6 +80,8 @@
     var bin = encoder.stream().getData();
     var url = 'data:image/gif;base64,' + encode64(bin);
     document.querySelector('#jif').src = url;
+    total = new Date - start;
+    console.log('Took ' + total + ' miliseconds to run');
   }
 
   startbutton.addEventListener('click', function(ev){
