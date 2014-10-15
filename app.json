@@ -1,0 +1,29 @@
+{
+  "name": "jifbox",
+  "description": "A GIF photobooth. Pronounced GIF-box.",
+  "repository": "https://github.com/sunlightlabs/jifbox",
+  "logo": "https://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["python", "flask", "gif"],
+  "env": {
+    "SECRET_KEY": {
+      "description": "A secret key for instance security.",
+      "generator": "secret"
+    },
+    "ADMIN_PASSWORD": {
+      "description": "The admin login password.",
+      "generator": "secret"
+    },
+    "DROPBOX_KEY": {
+        "description": "Dropbox OAuth app key.",
+        "required": false
+    },
+    "DROPBOX_SECRET": {
+        "description": "Dropbox OAuth app secret.",
+        "required": false
+    }
+  },
+  "addons": [
+    "openredis",
+    "mongolab:shared-single-small"
+  ]
+}
