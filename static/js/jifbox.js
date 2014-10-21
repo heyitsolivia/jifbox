@@ -5,19 +5,22 @@
       canvas       = document.querySelector('#cnvs'),
       photo        = document.querySelector('#photo'),
       startbutton  = document.querySelector('button#snap'),
+      burst_switch = document.querySelector('#burst-switch'),
+      burst        = false,
       width = 320,
       height = 0,
-      count = -1,
-      burst = true,
-      start;
+      count = -1;
 
-  gif = new GIF({
-    workers: 2,
-    quality: 10,
-    width: 320,
-    height: 240,
-    workerScript: '/static/gif.js/dist/gif.worker.js'
-  });
+  function createGif(){
+    gif = new GIF({
+      workers: 2,
+      quality: 10,
+      width: 320,
+      height: 240,
+      workerScript: '/static/gif.js/dist/gif.worker.js'
+    });
+    return gif
+  }
 
   navigator.getMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
@@ -62,12 +65,11 @@
     
 
     count++;
-    if (count === 12) {
+    if ( count === 12 ) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
-      start = new Date
       gif.render();
       
-    } else if (burst) {
+    } else if ( burst ) {
       snapPhoto();
     }
 
@@ -75,6 +77,7 @@
 
     document.querySelector('.photo' + count).setAttribute('src', data);
     gif.addFrame(document.querySelector('.photo' + count), {delay: 200});
+    console.log(gif)
   }
 
   function snapPhoto(){
@@ -83,14 +86,21 @@
     }
   }
 
+  createGif();
+
   gif.on('finished', function(blob) {
+    alert('did I hit???')
     document.querySelector('#jif').src = URL.createObjectURL(blob);
-    total = new Date - start
-    console.log('Took ' + total + ' miliseconds to run')
+    count = -1
+    delete gif;
+    createGif();
+  });
+
+  burst_switch.addEventListener('change', function(){
+    burst = this.checked
   });
 
   startbutton.addEventListener('click', function(ev){
-    console.log(burst)
     burst == true ? snapPhoto() : takepicture();
     ev.preventDefault();
   }, false);
