@@ -4,6 +4,7 @@ MarkupSafe==0.23
 Werkzeug==0.9.6
 dropbox==2.2.0
 itsdangerous==0.24
+pymongo==2.7.2
 redis==2.10.3
 rq==0.4.6
 waitress==0.8.9

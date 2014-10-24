@@ -1,6 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<form action="." method="post">
-	</form>
+
+    <h1>JIFBOX</h1>
+
+    <h2>Configuration</h2>
+
+    <form class="sm-col-6">
+
+        <fieldset class="fieldset-reset">
+
+            <legend class="h3 bold">Taking the photos</legend>
+
+            <label>Number of photos</label>
+            <input type="text" class="block half-width field-light" placeholder="10" size="4">
+
+            <label>Milliseconds between photos</label>
+            <input type="text" class="block half-width field-light" placeholder="10">
+
+        </fieldset>
+
+        <fieldset class="fieldset-reset">
+
+            <legend class="h3 bold">Making the GIF</legend>
+
+            <label>Milliseconds between frames</label>
+            <input type="text" class="block half-width field-light" placeholder="10">
+
+        </fieldset>
+
+    </form>
+
+    <h2>Services</h2>
+
+    <h3>Dropbox</h3>
+    {% if services.dropbox.is_available %}
+        {% if services.dropbox.is_enabled %}
+            <form action="." method="post">
+                <button class="button-red">Disconnect Dropbox</button>
+            </form>
+        {% else %}
+            <form action="." method="post">
+                <button class="button-blue">Connect to Dropbox</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p>Sorry, Dropbox is not enabled for this instance of JIFBOX.</p>
+    {% endif %}
+
+    <h3>Tumblr</h3>
+    {% if services.tumblr.is_available %}
+        {% if services.tumblr.is_enabled %}
+            <form action="." method="post">
+                <button class="button-red">Disconnect Tumblr</button>
+            </form>
+        {% else %}
+            <form action="." method="post">
+                <button class="button-blue">Connect to Tumblr</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p>Sorry, Tumblr is not enabled for this instance of JIFBOX.</p>
+    {% endif %}
+
+
+    <form action="/giffed" method="post">
+        <button class="button-gray mb1">Fake It</button>
+    </form>
+
 {% endblock %}
