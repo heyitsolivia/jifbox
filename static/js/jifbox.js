@@ -1,5 +1,6 @@
 (function() {
 
+  // variable declaration 
   var streaming = false,
       video        = document.querySelector('#vdo'),
       canvas       = document.querySelector('#cnvs'),
@@ -9,8 +10,9 @@
       burst        = false,
       width = 320,
       height = 0,
-      count = -1;
+      count = -1,
 
+      // instantiates a new gif object
       gif = new GIF({
         workers: 2,
         quality: 10,
@@ -20,6 +22,7 @@
       });
 
 
+  // Access to browser camera
   navigator.getMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia ||
@@ -55,6 +58,10 @@
     }
   }, false);
 
+
+  // Takes picture, draws image from canvas, sets img src attribute
+  // adds img to gif frame
+  // (could benefit from getting refactored into multiple single responsibility functions)
   function takepicture(){
     canvas.width = width;
     canvas.height = height;
@@ -77,25 +84,28 @@
     console.log(gif)
   }
 
+  // Timer to call takepicture() when app is in burst mode
   function snapPhoto(){
     if (count < 12){
       setTimeout(takepicture, 500);
     }
   }
 
-
+  // gif event listener to generate url blob
   gif.on('finished', function(blob) {
     document.querySelector('#jif').src = URL.createObjectURL(blob);
-    count = -1
-    gif.frames = []
-    gif.running = false
+    count = -1;
+    gif.frames = [];
+    gif.running = false;
     
   });
 
+  // listens to checkbox for burst mode
   burst_switch.addEventListener('change', function(){
-    burst = this.checked
+    burst = this.checked;
   });
 
+  // event listener for the startbutton to take a picture
   startbutton.addEventListener('click', function(ev){
     burst == true ? snapPhoto() : takepicture();
     ev.preventDefault();
