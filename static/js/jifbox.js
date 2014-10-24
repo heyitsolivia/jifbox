@@ -11,16 +11,14 @@
       height = 0,
       count = -1;
 
-  function createGif(){
-    gif = new GIF({
-      workers: 2,
-      quality: 10,
-      width: 320,
-      height: 240,
-      workerScript: '/static/gif.js/dist/gif.worker.js'
-    });
-    return gif
-  }
+      gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: 320,
+        height: 240,
+        workerScript: '/static/gif.js/dist/gif.worker.js'
+      });
+
 
   navigator.getMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
@@ -68,7 +66,6 @@
     if ( count === 12 ) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
       gif.render();
-      
     } else if ( burst ) {
       snapPhoto();
     }
@@ -76,7 +73,7 @@
     count = count % 12;
 
     document.querySelector('.photo' + count).setAttribute('src', data);
-    gif.addFrame(document.querySelector('.photo' + count), {delay: 200});
+    gif.addFrame(document.querySelector('.photo' + count), {delay: 250});
     console.log(gif)
   }
 
@@ -86,14 +83,13 @@
     }
   }
 
-  createGif();
 
   gif.on('finished', function(blob) {
-    alert('did I hit???')
     document.querySelector('#jif').src = URL.createObjectURL(blob);
     count = -1
-    delete gif;
-    createGif();
+    gif.frames = []
+    gif.running = false
+    
   });
 
   burst_switch.addEventListener('change', function(){
