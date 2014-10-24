@@ -111,6 +111,13 @@ class TumblrService(Service):
         pass
 
 
+# pseudoservice for storing config info
+class JIFBOXService(Service):
+    service_id = 'jifbox'
+    is_available = False
+    is_enabled = False
+
+
 services = {
     'dropbox': DropboxService(),
     'tumblr': TumblrService(),
