@@ -56,7 +56,8 @@
     {% endif %}
 
 
-    <form action="/giffed" method="post">
+    <form action="/giffed" method="post" enctype="multipart/form-data">
+        <input type="file" name="giffile">
         <button class="button-gray mb1">Fake It</button>
     </form>
 

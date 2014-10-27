@@ -1,6 +1,8 @@
 import datetime
 import os
 
+import requests
+
 try:
     from urlparse import urlparse       # python 2.x
 except:
@@ -111,14 +113,26 @@ class TumblrService(Service):
         flow = tumblr_auth_flow()
         client = flow.get_session(self['access_token'])
 
-        data = {
-            'type': 'text',
+        params = {
+            'type': 'photo',
             'state': 'published',
-            'title': payload['filename'],
-            'body': payload['data'],
         }
 
-        meta = client.post('post', data=data).json()
+        resp = client.post('post', params=params, data={}, header_auth=True)
+
+        headers = {
+            'Authorization': resp.request.headers['authorization']
+        }
+
+        files = {k: (None, v) for k, v in params.items()}
+        files['data'] = (payload['filename'], payload['data'], 'image/gif')
+
+        resp = requests.post(
+            'https://api.tumblr.com/v2/blog/%s/post' % self.hostname,
+            files=files,
+            headers=headers)
+        
+        meta = resp.json()
         return meta
 
 
@@ -179,6 +193,11 @@ def index():
 @app.route('/giffed', methods=['POST'])
 def giffed():
 
+    giffile = request.files['giffile']
+    if not giffile:
+        abort(500)
+    gifdata = giffile.read()
+
     response = {
         'active_services': {},
         'inactive_services': [],
@@ -187,8 +206,8 @@ def giffed():
     timestamp = datetime.datetime.utcnow()
 
     payload = {
-        'filename': '%s.txt' % timestamp.isoformat(),
-        'data': timestamp.isoformat(),
+        'filename': '%s.gif' % timestamp.isoformat(),
+        'data': gifdata,
         'timestamp': timestamp,
     }
 
