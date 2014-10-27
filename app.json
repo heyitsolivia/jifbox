@@ -32,6 +32,10 @@
     "TUMBLR_SECRET": {
       "description": "Tumblr OAuth app secret.",
       "required": false
+    },
+    "TUMBLR_HOSTNAME": {
+      "description": "Full hostname for Tumblr blog: thisismyblog.tumblr.com",
+      "required": false
     }
   },
   "addons": [
