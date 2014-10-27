@@ -36,13 +36,9 @@
     <h3>Dropbox</h3>
     {% if services.dropbox.is_available %}
         {% if services.dropbox.is_enabled %}
-            <form action="." method="post">
-                <button class="button-red">Disconnect Dropbox</button>
-            </form>
+            <a class="button button-red" href="/settings/dropbox/logout">Disconnect Dropbox</a>
         {% else %}
-            <form action="." method="post">
-                <button class="button-blue">Connect to Dropbox</button>
-            </form>
+           	<a class="button button-blue" href="/settings/dropbox/auth">Connect to Dropbox</a>
         {% endif %}
     {% else %}
         <p>Sorry, Dropbox is not enabled for this instance of JIFBOX.</p>
@@ -51,13 +47,9 @@
     <h3>Tumblr</h3>
     {% if services.tumblr.is_available %}
         {% if services.tumblr.is_enabled %}
-            <form action="." method="post">
-                <button class="button-red">Disconnect Tumblr</button>
-            </form>
+            <a class="button button-red" href="/settings/tumblr/logout">Disconnect Tumblr</a>
         {% else %}
-            <form action="." method="post">
-                <button class="button-blue">Connect to Tumblr</button>
-            </form>
+           	<a class="button button-blue" href="/settings/tumblr/auth">Connect to Tumblr</a>
         {% endif %}
     {% else %}
         <p>Sorry, Tumblr is not enabled for this instance of JIFBOX.</p>

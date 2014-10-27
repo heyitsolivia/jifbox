@@ -7,8 +7,9 @@ except:
     from urllib.parse import urlparse   # python 3.x
 
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
-from flask import Flask, abort, flash, jsonify, redirect, render_template, session, url_for
+from flask import Flask, abort, flash, jsonify, redirect, render_template, request, session, url_for
 from pymongo import MongoClient
+from rauth import OAuth1Service
 
 
 #
@@ -83,11 +84,8 @@ class DropboxService(Service):
 
     def process(self, payload):
         client = DropboxClient(self['access_token'])
-
-        overwrite = bool(payload.get('overwrite'))
-        client.put_file(payload['filename'], payload['data'], overwrite=overwrite)
-
-        return True
+        meta = client.put_file(payload['filename'], payload['data'], overwrite=False)
+        return meta
 
 
 class TumblrService(Service):
@@ -98,17 +96,42 @@ class TumblrService(Service):
         super(TumblrService, self).__init__()
         self.client_key = os.environ.get('TUMBLR_KEY')
         self.client_secret = os.environ.get('TUMBLR_SECRET')
+        self.hostname = os.environ.get('TUMBLR_HOSTNAME')
 
     @property
     def is_available(self):
-        return bool(self.client_key and self.client_secret)
+        return bool(self.client_key and self.client_secret and self.hostname)
 
     @property
     def is_enabled(self):
-        return False
+        return bool(self['request_token'] and self['request_secret'] and self['oauth_token'] and self['oauth_verifier'])
 
     def process(self, payload):
-        pass
+
+        flow = tumblr_auth_flow()
+        client = flow.get_auth_session(
+            self['request_token'],
+            self['request_secret'],
+            method='POST',
+            data={
+                'oauth_token': self['oauth_token'],
+                'oauth_verifier': self['oauth_verifier'],
+            })
+
+        session = OAuth1Session('123',
+                        '456',
+                        access_token='321',
+                        access_token_secret='654')
+
+        data = {
+            'type': 'text',
+            'state': 'published',
+            'title': payload['filename'],
+            'body': payload['data'],
+        }
+
+        meta = client.post('post', data=data).json()
+        return meta
 
 
 # pseudoservice for storing config info
@@ -125,7 +148,7 @@ services = {
 
 
 #
-# Dropbox configuration
+# Dropbox stuff
 #
 
 def dropbox_auth_flow():
@@ -133,6 +156,23 @@ def dropbox_auth_flow():
     redirect_uri = url_for('dropbox_callback', _external=True)
     flow = DropboxOAuth2Flow(dropbox.client_key, dropbox.client_secret,
         redirect_uri, session, 'dropbox-auth-csrf-token')
+    return flow
+
+
+#
+# Tumblr stuff
+#
+
+def tumblr_auth_flow(request_token=None, request_secret=None):
+    ts = services['tumblr']
+    flow = OAuth1Service(
+        name='tumblr',
+        consumer_key=ts.client_key,
+        consumer_secret=ts.client_secret,
+        request_token_url='http://www.tumblr.com/oauth/request_token',
+        access_token_url='http://www.tumblr.com/oauth/access_token',
+        authorize_url='http://www.tumblr.com/oauth/authorize',
+        base_url='https://api.tumblr.com/v2/blog/%s/' % ts.hostname)
     return flow
 
 
@@ -151,21 +191,21 @@ def index():
 @app.route('/giffed', methods=['POST'])
 def giffed():
 
-    response = {'active_services': []}
+    response = {'active_services': {}}
 
     timestamp = datetime.datetime.utcnow()
 
     payload = {
         'filename': '%s.txt' % timestamp.isoformat(),
         'data': timestamp.isoformat(),
-        'overwrite': False,
         'timestamp': timestamp,
     }
 
     for sid, service in services.items():
         if service.is_available and service.is_enabled:
-            if service.process(payload):
-                response['active_services'].append(sid)
+            meta = service.process(payload)
+            if meta:
+                response['active_services'][sid] = meta
 
     return jsonify(response)
 
@@ -175,6 +215,8 @@ def settings():
     context = {'services': services}
     return render_template('settings.html', **context)
 
+
+# Dropbox
 
 @app.route('/settings/dropbox/auth')
 def dropbox_auth():
@@ -202,7 +244,7 @@ def dropbox_callback():
 
     services['dropbox']['access_token'] = access_token
 
-    return redirect(url_for('home'))
+    return redirect(url_for('settings'))
 
 
 @app.route('/settings/dropbox/logout')
@@ -210,6 +252,61 @@ def dropbox_logout():
     del services['dropbox']['access_token']
     return redirect(url_for('settings'))
 
+
+# Tumblr
+
+@app.route('/settings/tumblr/auth')
+def tumblr_auth():
+
+    service = services['tumblr']
+    flow = tumblr_auth_flow()
+
+    request_token, request_token_secret = flow.get_request_token()
+    authorize_url = flow.get_authorize_url(request_token)
+
+    service['request_token'] = request_token
+    service['request_secret'] = request_token_secret
+
+    return redirect(authorize_url)
+
+
+@app.route('/settings/tumblr/callback')
+def tumblr_callback():
+
+    oauth_token = request.args.get('oauth_token')
+    oauth_verifier = request.args.get('oauth_verifier')
+
+    if oauth_token and oauth_verifier:
+
+        service = services['tumblr']
+
+        flow = tumblr_auth_flow()
+        access_token = flow.get_auth_session(
+            service['request_token'],
+            service['request_secret'],
+            method='POST',
+            data={
+                'oauth_token': oauth_token,
+                'oauth_verifier': oauth_verifier,
+            })
+
+        print access_token
+
+    return redirect(url_for('settings'))
+
+
+@app.route('/settings/tumblr/logout')
+def tumblr_logout():
+    del services['tumblr']['request_token']
+    del services['tumblr']['request_secret']
+    del services['tumblr']['oauth_token']
+    del services['tumblr']['oauth_verifier']
+    return redirect(url_for('settings'))
+
+
+#
+# GET IT GIFFED!!!!!!!
+#
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
