@@ -9,7 +9,8 @@ except:
     from urllib.parse import urlparse   # python 3.x
 
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
-from flask import Flask, abort, flash, jsonify, redirect, render_template, request, session, url_for
+from flask import (Flask, abort, flash, jsonify, redirect,
+    render_template, request, session, url_for)
 from pymongo import MongoClient
 from rauth import OAuth1Service
 
@@ -23,10 +24,11 @@ mongo_conn = MongoClient(mongo_url)
 
 mongo_params = urlparse(mongo_url)
 
-if mongo_params.username and mongo_params.password:
-    mongo_conn.authenticate(mongo_params.username, mongo_params.password)
-
 mongo = mongo_conn[mongo_params.path.strip('/')]
+
+if mongo_params.username and mongo_params.password:
+    mongo.authenticate(mongo_params.username, mongo_params.password)
+
 
 
 #
