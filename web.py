@@ -86,7 +86,8 @@ class DropboxService(Service):
 
     def process(self, payload):
         client = DropboxClient(self['access_token'])
-        meta = client.put_file(payload['filename'], payload['data'], overwrite=False)
+        path = "%s/%s" % (payload['timestamp'].date().isoformat(), payload['filename'])
+        meta = client.put_file(path, payload['data'], overwrite=False)
         return meta
 
 
