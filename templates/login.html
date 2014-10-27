@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>JIFBOX</h1>
+
+    <h2>WHO ARE YOU?!</h2>
+
+    <form action="/login" method="post">
+   		<label>Password</label>
+    	<input type="password" name="password" class="block half-width field-light">
+    	<button class="button-blue">Login</button>
+    </form>
+
+{% endblock %}

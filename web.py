@@ -11,8 +11,14 @@ except:
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
 from flask import (Flask, abort, flash, jsonify, redirect,
     render_template, request, session, url_for)
+from flask.ext.login import LoginManager, UserMixin, login_required, login_user
 from pymongo import MongoClient
 from rauth import OAuth1Service
+
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
+BASIC_PASSWORD = os.environ.get('BASIC_PASSWORD')
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 #
@@ -28,7 +34,6 @@ mongo = mongo_conn[mongo_params.path.strip('/')]
 
 if mongo_params.username and mongo_params.password:
     mongo.authenticate(mongo_params.username, mongo_params.password)
-
 
 
 #
@@ -186,7 +191,66 @@ def tumblr_auth_flow(request_token=None, request_secret=None):
 #
 
 app = Flask(__name__)
+app.secret_key = SECRET_KEY
 
+
+# login stuff
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+class User(UserMixin):
+    def __init__(self, is_admin=False):
+        self.is_admin = is_admin
+
+    @classmethod
+    def admin_user(self):
+        user = User(is_admin=True)
+        user.id = 'admin'
+        return user
+
+    @classmethod
+    def basic_user(self):
+        user = User(is_admin=False)
+        user.id = 'basic'
+        return user
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == 'admin':
+        return User.admin_user()
+    elif user_id == 'basic':
+        return User.basic_user()
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == 'POST':
+
+        password = request.form.get('password')
+        
+        user = None
+
+        print password, ADMIN_PASSWORD, BASIC_PASSWORD
+
+        if password == ADMIN_PASSWORD:
+            user = User.admin_user()
+            print user
+            login_user(user)
+            return redirect(url_for('settings'))
+
+        elif password == BASIC_PASSWORD:
+            user = User.basic_user()
+            login_user(user)
+            return redirect(url_for('index'))        
+
+    return render_template('login.html')
+    
+
+# routes
 
 @app.route('/')
 def index():
@@ -226,6 +290,7 @@ def giffed():
 
 
 @app.route('/settings')
+@login_required
 def settings():
     context = {'services': services}
     return render_template('settings.html', **context)
@@ -234,6 +299,7 @@ def settings():
 # Dropbox
 
 @app.route('/settings/dropbox/auth')
+@login_required
 def dropbox_auth():
     flow = dropbox_auth_flow()
     return redirect(flow.start())
@@ -263,6 +329,7 @@ def dropbox_callback():
 
 
 @app.route('/settings/dropbox/logout')
+@login_required
 def dropbox_logout():
     del services['dropbox']['access_token']
     return redirect(url_for('settings'))
@@ -271,6 +338,7 @@ def dropbox_logout():
 # Tumblr
 
 @app.route('/settings/tumblr/auth')
+@login_required
 def tumblr_auth():
 
     service = services['tumblr']
@@ -313,6 +381,7 @@ def tumblr_callback():
 
 
 @app.route('/settings/tumblr/logout')
+@login_required
 def tumblr_logout():
     del services['tumblr']['access_token']
     return redirect(url_for('settings'))
