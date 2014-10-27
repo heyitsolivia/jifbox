@@ -1,42 +1,43 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>jifbox</title>
-		<style>
-			#cnvs { border: 1px solid #999; width: 100px; height: 100px; }
-			#vdo { border: 1px solid #999; width: 100px; height: 100px; }
-			#jif { width: 640px; height: 480px; }
-			.snaps img { width: 160px; height: 120px; }
-		</style>
-	</head>
-	<body>
-		<canvas id="cnvs"></canvas>
-		<video id="vdo"></video>
-		<div class="snaps">
-			<img src="http://placekitten.com/g/320/240" class="photo0" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo1" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo2" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo3" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo4" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo5" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo6" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo7" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo8" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo9" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo10" alt="photo">
-			<img src="http://placekitten.com/g/320/240" class="photo11" alt="photo">
-		</div>
-		<p>
-			<button id="snap">SNAP</button>
-		</p>
-		<img src="" id="jif">
-	</body>
-	<script src="/static/js/LZWEncoder.js"></script>
-	<script src="/static/js/NeuQuant.js"></script>
-	<script src="/static/js/GIFEncoder.js"></script>
-	<script src="/static/js/b64.js"></script>
-	<script src="/static/js/jifbox.js"></script>
-	<script>
-	</script>
+  <head>
+    <meta charset="utf-8">
+    <title>jifbox</title>
+    <style>
+      #cnvs { border: 1px solid #999; width: 100px; height: 100px; }
+      #vdo { border: 1px solid #999; width: 100px; height: 100px; }
+      /*#jif { width: 640px; height: 480px; }*/
+      .snaps img { width: 160px; height: 120px; }
+    </style>
+  </head>
+  <body>
+    <div>
+      <input type="checkbox" id="burst-switch" name="burst-switch" class="switch">
+      <label for="burst-switch">Burst mode</label> 
+    </div>
+    <canvas id="cnvs"></canvas>
+    <video id="vdo"></video>
+    <div class="snaps">
+      <img src="http://placekitten.com/g/320/240" class="photo0" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo1" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo2" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo3" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo4" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo5" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo6" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo7" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo8" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo9" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo10" alt="photo">
+      <img src="http://placekitten.com/g/320/240" class="photo11" alt="photo">
+    </div>
+    <p>
+      <button id="snap">SNAP</button>
+    </p>
+    <img src="" id="jif">
+  </body>
+  <script src="/static/gif.js/dist/gif.js"></script>
+  <script src="/static/js/jifbox.js"></script>
+  <script>
+  </script>
 </html>

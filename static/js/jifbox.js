@@ -1,14 +1,28 @@
 (function() {
 
+  // variable declaration 
   var streaming = false,
       video        = document.querySelector('#vdo'),
       canvas       = document.querySelector('#cnvs'),
       photo        = document.querySelector('#photo'),
       startbutton  = document.querySelector('button#snap'),
+      burst_switch = document.querySelector('#burst-switch'),
+      burst        = false,
       width = 320,
       height = 0,
-      count = -1;
+      count = -1,
 
+      // instantiates a new gif object
+      gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: 320,
+        height: 240,
+        workerScript: '/static/gif.js/dist/gif.worker.js'
+      });
+
+
+  // Access to browser camera
   navigator.getMedia = ( navigator.getUserMedia ||
                          navigator.webkitGetUserMedia ||
                          navigator.mozGetUserMedia ||
@@ -44,48 +58,56 @@
     }
   }, false);
 
-  function takepicture() {
+
+  // Takes picture, draws image from canvas, sets img src attribute
+  // adds img to gif frame
+  // (could benefit from getting refactored into multiple single responsibility functions)
+  function takepicture(){
     canvas.width = width;
     canvas.height = height;
     canvas.getContext('2d').drawImage(video, 0, 0, width, height);
     var data = canvas.toDataURL('image/png');
+    
 
     count++;
-    if (count === 12) {
-      gifit();
+    if ( count === 12 ) {
+      document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
+      gif.render();
+    } else if ( burst ) {
+      snapPhoto();
     }
+
     count = count % 12;
 
     document.querySelector('.photo' + count).setAttribute('src', data);
+    gif.addFrame(document.querySelector('.photo' + count), {delay: 250});
+    console.log(gif)
   }
 
-  function gifit() {
-    start = new Date;
-    var encoder = new GIFEncoder();
-    encoder.setRepeat(0);
-    encoder.setDelay(150);
-    encoder.start();
-
-    var context = canvas.getContext('2d');
-
-    for (var i = 0; i < 12; i++) {
-      console.log(i);
-      var img = document.querySelector('.photo' + i);
-      context.drawImage(img, 0, 0, width, height);
-      encoder.addFrame(context);
+  // Timer to call takepicture() when app is in burst mode
+  function snapPhoto(){
+    if (count < 12){
+      setTimeout(takepicture, 500);
     }
-
-    encoder.finish();
-
-    var bin = encoder.stream().getData();
-    var url = 'data:image/gif;base64,' + encode64(bin);
-    document.querySelector('#jif').src = url;
-    total = new Date - start;
-    console.log('Took ' + total + ' miliseconds to run');
   }
 
+  // gif event listener to generate url blob
+  gif.on('finished', function(blob) {
+    document.querySelector('#jif').src = URL.createObjectURL(blob);
+    count = -1;
+    gif.frames = [];
+    gif.running = false;
+    
+  });
+
+  // listens to checkbox for burst mode
+  burst_switch.addEventListener('change', function(){
+    burst = this.checked;
+  });
+
+  // event listener for the startbutton to take a picture
   startbutton.addEventListener('click', function(ev){
-    takepicture();
+    burst == true ? snapPhoto() : takepicture();
     ev.preventDefault();
   }, false);
 
