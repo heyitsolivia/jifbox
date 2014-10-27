@@ -179,7 +179,10 @@ def index():
 @app.route('/giffed', methods=['POST'])
 def giffed():
 
-    response = {'active_services': {}}
+    response = {
+        'active_services': {},
+        'inactive_services': [],
+    }
 
     timestamp = datetime.datetime.utcnow()
 
@@ -194,6 +197,8 @@ def giffed():
             meta = service.process(payload)
             if meta:
                 response['active_services'][sid] = meta
+        else:
+            response['inactive_services'].append(sid)
 
     return jsonify(response)
 
