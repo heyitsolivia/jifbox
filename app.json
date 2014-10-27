@@ -1,5 +1,5 @@
 {
-  "name": "jifbox",
+  "name": "JIFBOX",
   "description": "A GIF photobooth. Pronounced GIF-box.",
   "repository": "https://github.com/sunlightlabs/jifbox",
   "logo": "https://node-js-sample.herokuapp.com/node.svg",
@@ -13,17 +13,28 @@
       "description": "The admin login password.",
       "generator": "secret"
     },
+    "BASIC_PASSWORD": {
+      "description": "Set to require a password to start JIFBOX",
+      "required": false
+    },
     "DROPBOX_KEY": {
-        "description": "Dropbox OAuth app key.",
-        "required": false
+      "description": "Dropbox OAuth app key.",
+      "required": false
     },
     "DROPBOX_SECRET": {
-        "description": "Dropbox OAuth app secret.",
-        "required": false
+      "description": "Dropbox OAuth app secret.",
+      "required": false
+    },
+    "TUMBLR_KEY": {
+      "description": "Tumblr OAuth app key.",
+      "required": false
+    },
+    "TUMBLR_SECRET": {
+      "description": "Tumblr OAuth app secret.",
+      "required": false
     }
   },
   "addons": [
-    "openredis",
-    "mongolab:shared-single-small"
+    "mongohq:sandbox"
   ]
 }
