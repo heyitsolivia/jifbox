@@ -104,24 +104,12 @@ class TumblrService(Service):
 
     @property
     def is_enabled(self):
-        return bool(self['request_token'] and self['request_secret'] and self['oauth_token'] and self['oauth_verifier'])
+        return bool(self['access_token'])
 
     def process(self, payload):
 
         flow = tumblr_auth_flow()
-        client = flow.get_auth_session(
-            self['request_token'],
-            self['request_secret'],
-            method='POST',
-            data={
-                'oauth_token': self['oauth_token'],
-                'oauth_verifier': self['oauth_verifier'],
-            })
-
-        session = OAuth1Session('123',
-                        '456',
-                        access_token='321',
-                        access_token_secret='654')
+        client = flow.get_session(self['access_token'])
 
         data = {
             'type': 'text',
@@ -281,26 +269,25 @@ def tumblr_callback():
         service = services['tumblr']
 
         flow = tumblr_auth_flow()
-        access_token = flow.get_auth_session(
+        access_token = flow.get_access_token(
             service['request_token'],
             service['request_secret'],
-            method='POST',
+            method='GET',
             data={
-                'oauth_token': oauth_token,
                 'oauth_verifier': oauth_verifier,
             })
 
-        print access_token
+        service['access_token'] = list(access_token)
+
+        del services['tumblr']['request_token']
+        del services['tumblr']['request_secret']
 
     return redirect(url_for('settings'))
 
 
 @app.route('/settings/tumblr/logout')
 def tumblr_logout():
-    del services['tumblr']['request_token']
-    del services['tumblr']['request_secret']
-    del services['tumblr']['oauth_token']
-    del services['tumblr']['oauth_verifier']
+    del services['tumblr']['access_token']
     return redirect(url_for('settings'))
 
 
