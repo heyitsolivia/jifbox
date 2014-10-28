@@ -95,11 +95,11 @@
 
   // gif event listener to generate url blob
   gif.on('finished', function(blob) {
-    uploadGIF(blob);
     document.querySelector('#jif').src = URL.createObjectURL(blob);
     count = -1;
     gif.frames = [];
     gif.running = false;
+    uploadGIF(blob);
   });
 
   // listens to checkbox for burst mode
@@ -171,7 +171,7 @@
     request.open('POST', '/giffed', true);
     request.send(formData);
     request.onload = function() {
-      if (xhr.status === 200) {
+      if (request.status === 200) {
         // done
       } else {
         // an error occured
