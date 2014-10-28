@@ -17,7 +17,7 @@
 
       // instantiates a new gif object
       gif = new GIF({
-        workers: 1,
+        workers: 2,
         quality: 10,
         width: 320,
         height: 240,
