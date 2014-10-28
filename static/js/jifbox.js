@@ -76,7 +76,6 @@
     if ( count === frames ) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
       gif.render();
-      upload();
     } else if ( burst ) {
       snapPhoto();
     }
@@ -96,11 +95,11 @@
 
   // gif event listener to generate url blob
   gif.on('finished', function(blob) {
+    uploadGIF(blob);
     document.querySelector('#jif').src = URL.createObjectURL(blob);
     count = -1;
     gif.frames = [];
     gif.running = false;
-    
   });
 
   // listens to checkbox for burst mode
@@ -163,24 +162,22 @@
     }
   }
 
-  function upload(){
+  function uploadGIF(blob){
+
     var formData = new FormData();
-    var files = fileSelect.files;
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-      console.log(file.type);
-      if (!file.type.match('image.*')) {
-        continue;
-      }
-      formData.append('giffile', file, file.name);
-    }
+    formData.append('giffile', blob, 'jif.gif');
 
     var request = new XMLHttpRequest();
     request.open('POST', '/giffed', true);
-    request.onload = function() {
-      console.log('done');
-    }
     request.send(formData);
+    request.onload = function() {
+      if (xhr.status === 200) {
+        // done
+      } else {
+        // an error occured
+      }
+    }
+
   }
 
   applySettings();
