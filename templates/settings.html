@@ -8,17 +8,17 @@
 
     <h2>Configuration</h2>
 
-    <form class="sm-col-6">
+    <form class="sm-col-6" action="/settings" method="post">
 
         <fieldset class="fieldset-reset">
 
             <legend class="h3 bold">Taking the photos</legend>
 
             <label>Number of photos</label>
-            <input type="text" class="block half-width field-light" placeholder="10" size="4">
+            <input type="number" class="block half-width field-light" placeholder="10" name="frames" value="{{ settings.frames }}">
 
             <label>Milliseconds between photos</label>
-            <input type="text" class="block half-width field-light" placeholder="10">
+            <input type="number" class="block half-width field-light" placeholder="10" name="snap_delay" value="{{ settings.snap_delay }}">
 
         </fieldset>
 
@@ -27,9 +27,11 @@
             <legend class="h3 bold">Making the GIF</legend>
 
             <label>Milliseconds between frames</label>
-            <input type="text" class="block half-width field-light" placeholder="10">
+            <input type="number" class="block half-width field-light" placeholder="10" name="frame_delay" value="{{ settings.frame_delay }}">
 
         </fieldset>
+
+        <button class="button-blue mb1" type="submit">Save Settings</button>
 
     </form>
 

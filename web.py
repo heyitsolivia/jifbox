@@ -22,6 +22,12 @@ BASIC_PASSWORD = os.environ.get('BASIC_PASSWORD')
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+DEFAULT_SETTINGS = {
+    'frame_delay': 255,
+    'frames': 10,
+    'snap_delay': 500,
+}
+
 
 #
 # MongoDB configuration
@@ -59,13 +65,16 @@ class Service(object):
     def __delitem__(self, key):
         if key in self._config:
             del self._config[key]
-            mongo.services.save(self._config)
+            self.save()
 
     def __getitem__(self, key):
         return self._config.get(key)
 
     def __setitem__(self, key, value):
         self._config[key] = value
+        self.save()
+
+    def save(self):
         mongo.services.save(self._config)
 
     def process(self, payload):
@@ -152,6 +161,24 @@ class JIFBOXService(Service):
     is_available = False
     is_enabled = False
 
+    def __init__(self):
+        super(JIFBOXService, self).__init__()
+
+        settings = DEFAULT_SETTINGS.copy()
+        settings.update(self.settings)
+        self['settings'] = settings
+
+    @property
+    def settings(self):
+        return self['settings'] or {}
+
+    def update_settings(self, new_settings):
+        current_settings = self.settings
+        current_settings.update(new_settings)
+        self['settings'] = current_settings
+
+
+jifbox = JIFBOXService()
 
 services = {
     'dropbox': DropboxService(),
@@ -318,18 +345,32 @@ def giffed():
     return jsonify(response)
 
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 @login_definitely_required
 def settings():
-    context = {'services': services}
+
+    if request.method == 'POST':
+
+        new_settings = {}
+        current_settings = jifbox.settings
+
+        for key, default_value in DEFAULT_SETTINGS.items():
+            value = request.form.get(key) or current_settings.get(key) or default_value
+            value = int(value)
+            new_settings[key] = value
+
+        jifbox.update_settings(new_settings)
+
+        return redirect(url_for('settings'))
+
+    context = {'services': services, 'settings': jifbox.settings}
     return render_template('settings.html', **context)
 
-@app.route('/get-settings')
+
+@app.route('/get-settings', methods=['GET'])
 def gifsettings():
-    # JEREMY POPULATE ME WITH DB QUERIES!!!!!
-    #PPPLEEEAAASE
-    settings = {'frames': 10, 'snap_delay': 500, 'frame_delay': 255}
-    return jsonify(settings)
+    return jsonify(jifbox.settings)
+
 
 # Dropbox
 
