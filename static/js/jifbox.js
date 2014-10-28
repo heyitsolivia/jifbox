@@ -8,6 +8,9 @@
       startbutton  = document.querySelector('button#snap'),
       burst_switch = document.querySelector('#burst-switch'),
       burst        = false,
+      frames       = 12,
+      frame_delay  = 250,
+      snap_delay   = 500,
       width = 320,
       height = 0,
       count = -1,
@@ -70,23 +73,23 @@
     
 
     count++;
-    if ( count === 12 ) {
+    if ( count === frames ) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
       gif.render();
     } else if ( burst ) {
       snapPhoto();
     }
 
-    count = count % 12;
+    count = count % frames;
 
     document.querySelector('.photo' + count).setAttribute('src', data);
-    gif.addFrame(document.querySelector('.photo' + count), {delay: 250});
+    gif.addFrame(document.querySelector('.photo' + count), {delay: frame_delay});
   }
 
   // Timer to call takepicture() when app is in burst mode
   function snapPhoto(){
-    if (count < 12){
-      setTimeout(takepicture, 500);
+    if (count < frames){
+      setTimeout(takepicture, snap_delay);
     }
   }
 
@@ -106,6 +109,7 @@
 
   // event listener for the startbutton to take a picture
   startbutton.addEventListener('click', function(ev){
+    prepCapture();
     ev.preventDefault();
   }, false);
 
@@ -128,5 +132,36 @@
   function prepCapture(){
      burst == true ? snapPhoto() : takepicture();
   }
+
+  // creates the img frames
+  function createFrameEls(){
+    for (var i = 0; i < frames; i++){
+      var img = document.createElement('img');
+      img.setAttribute('src', 'http://placekitten.com/g/320/240');
+      img.setAttribute('class', 'photo' + i );
+      img.setAttribute('alt', 'photo');
+      document.querySelector('.snaps').appendChild(img);
+    }
+  }
+
+  function applySettings(){
+    var request = new XMLHttpRequest();
+    request.open('GET', '/get-settings', true);
+    request.send();
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400){
+        // Success!
+        data = JSON.parse(request.responseText);
+        frames = data.frames;
+        frame_delay = data.frame_delay;
+        snap_delay = data.snap_delay;
+      } else {
+        console.log("hmm something isn't right")
+      }
+      createFrameEls();
+    }
+  }
+
+  applySettings();
 
 })();

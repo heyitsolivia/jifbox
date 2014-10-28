@@ -9,11 +9,9 @@ except:
     from urllib.parse import urlparse   # python 3.x
 
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
-from flask import (Flask, abort, current_app, flash, jsonify, redirect,
+from flask import (Flask, abort, flash, jsonify, redirect,
     render_template, request, session, url_for)
-from flask.ext.login import (LoginManager, UserMixin,
-    current_user, login_user, logout_user)
-from functools import wraps
+from flask.ext.login import LoginManager, UserMixin, login_required, login_user
 from pymongo import MongoClient
 from rauth import OAuth1Service
 
@@ -21,7 +19,6 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 BASIC_PASSWORD = os.environ.get('BASIC_PASSWORD')
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
-
 
 #
 # MongoDB configuration
@@ -200,7 +197,6 @@ app.secret_key = SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
 
 
 class User(UserMixin):
@@ -220,28 +216,6 @@ class User(UserMixin):
         return user
 
 
-def login_maybe_required(func):
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if current_app.login_manager._login_disabled:
-            return func(*args, **kwargs)
-        elif BASIC_PASSWORD and not current_user.is_authenticated():
-            return current_app.login_manager.unauthorized()
-        return func(*args, **kwargs)
-    return decorated_view
-
-
-def login_definitely_required(func):
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if current_app.login_manager._login_disabled:
-            return func(*args, **kwargs)
-        elif not current_user.is_authenticated() or not getattr(current_user, 'is_admin', False):
-            return current_app.login_manager.unauthorized()
-        return func(*args, **kwargs)
-    return decorated_view
-
-
 @login_manager.user_loader
 def load_user(user_id):
     if user_id == 'admin':
@@ -259,8 +233,11 @@ def login():
         
         user = None
 
+        print password, ADMIN_PASSWORD, BASIC_PASSWORD
+
         if password == ADMIN_PASSWORD:
             user = User.admin_user()
+            print user
             login_user(user)
             return redirect(url_for('settings'))
 
@@ -270,24 +247,16 @@ def login():
             return redirect(url_for('index'))        
 
     return render_template('login.html')
-
-  
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
+    
 
 # routes
 
 @app.route('/')
-@login_maybe_required
 def index():
     return render_template('jifbox.html')
 
 
 @app.route('/giffed', methods=['POST'])
-@login_maybe_required
 def giffed():
 
     giffile = request.files['giffile']
@@ -320,16 +289,23 @@ def giffed():
 
 
 @app.route('/settings')
-@login_definitely_required
+@login_required
 def settings():
     context = {'services': services}
     return render_template('settings.html', **context)
 
 
+@app.route('/get-settings')
+def gifsettings():
+    # JEREMY POPULATE ME WITH DB QUERIES!!!!!
+    #PPPLEEEAAASE
+    settings = {'frames': 10, 'snap_delay': 500, 'frame_delay': 255}
+    return jsonify(settings)
+
 # Dropbox
 
 @app.route('/settings/dropbox/auth')
-@login_definitely_required
+@login_required
 def dropbox_auth():
     flow = dropbox_auth_flow()
     return redirect(flow.start())
@@ -359,7 +335,7 @@ def dropbox_callback():
 
 
 @app.route('/settings/dropbox/logout')
-@login_definitely_required
+@login_required
 def dropbox_logout():
     del services['dropbox']['access_token']
     return redirect(url_for('settings'))
@@ -368,7 +344,7 @@ def dropbox_logout():
 # Tumblr
 
 @app.route('/settings/tumblr/auth')
-@login_definitely_required
+@login_required
 def tumblr_auth():
 
     service = services['tumblr']
@@ -411,7 +387,7 @@ def tumblr_callback():
 
 
 @app.route('/settings/tumblr/logout')
-@login_definitely_required
+@login_required
 def tumblr_logout():
     del services['tumblr']['access_token']
     return redirect(url_for('settings'))
