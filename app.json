@@ -39,6 +39,7 @@
     }
   },
   "addons": [
-    "mongohq:sandbox"
+    "mongohq:sandbox",
+    "rediscloud:25"
   ]
 }

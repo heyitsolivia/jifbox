@@ -16,6 +16,8 @@ from flask.ext.login import (LoginManager, UserMixin,
 from functools import wraps
 from pymongo import MongoClient
 from rauth import OAuth1Service
+from redis import Redis
+from rq import Queue
 
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
 BASIC_PASSWORD = os.environ.get('BASIC_PASSWORD')
@@ -36,6 +38,26 @@ mongo = mongo_conn[mongo_params.path.strip('/')]
 
 if mongo_params.username and mongo_params.password:
     mongo.authenticate(mongo_params.username, mongo_params.password)
+
+
+#
+# Redis and rq configuration
+#
+
+redis_url = os.environ.get('REDISCLOUD_URL', 'redis://localhost:6379')
+redis_params = urlparse(redis_url)
+
+redis_conn_args = {
+    'host': redis_params.hostname,
+    'port': redis_params.port,
+}
+
+if redis_params.password:
+    redis_conn_args['password'] = redis_params.password
+
+redis_conn = Redis(**redis_conn_args)
+
+q = Queue(connection=redis_conn)
 
 
 #
