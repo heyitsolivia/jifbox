@@ -76,6 +76,7 @@
     if ( count === frames ) {
       document.querySelector('#jif').src = '/static/gif.js/site/contents/images/loading.gif'
       gif.render();
+      upload();
     } else if ( burst ) {
       snapPhoto();
     }
@@ -160,6 +161,26 @@
       }
       createFrameEls();
     }
+  }
+
+  function upload(){
+    var formData = new FormData();
+    var files = fileSelect.files;
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      console.log(file.type);
+      if (!file.type.match('image.*')) {
+        continue;
+      }
+      formData.append('giffile', file, file.name);
+    }
+
+    var request = new XMLHttpRequest();
+    request.open('POST', '/giffed', true);
+    request.onload = function() {
+      console.log('done');
+    }
+    request.send(formData);
   }
 
   applySettings();
