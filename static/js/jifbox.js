@@ -81,7 +81,6 @@
 
     document.querySelector('.photo' + count).setAttribute('src', data);
     gif.addFrame(document.querySelector('.photo' + count), {delay: 250});
-    console.log(gif)
   }
 
   // Timer to call takepicture() when app is in burst mode
@@ -107,8 +106,27 @@
 
   // event listener for the startbutton to take a picture
   startbutton.addEventListener('click', function(ev){
-    burst == true ? snapPhoto() : takepicture();
     ev.preventDefault();
   }, false);
+
+  // Handles keyboard trigger
+  document.addEventListener('keypress', function(ev){
+    if ( ev.keyCode == 32 ){
+      // spacebar to trigger capture
+      prepCapture();
+    } else if ( ev.keyCode == 122 ){
+      // "z" key to check burst_switch
+      burst_switch.checked = true;
+      burst = true;
+    } else if ( ev.keyCode == 120 ) {
+      // "x" key to uncheck burst_switch
+      burst_switch.checked = false;
+      burst = false;
+    }
+  })
+
+  function prepCapture(){
+     burst == true ? snapPhoto() : takepicture();
+  }
 
 })();
