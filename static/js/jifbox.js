@@ -113,21 +113,20 @@
     ev.preventDefault();
   }, false);
 
-  // Handles keyboard trigger
-  document.addEventListener('keypress', function(ev){
+  document.addEventListener('keyup', function(ev){
     if ( ev.keyCode == 32 ){
       // spacebar to trigger capture
       prepCapture();
-    } else if ( ev.keyCode == 122 ){
+    } else if ( ev.keyCode == 90 ){
       // "z" key to check burst_switch
       burst_switch.checked = true;
       burst = true;
-    } else if ( ev.keyCode == 120 ) {
+    } else if ( ev.keyCode == 88 ) {
       // "x" key to uncheck burst_switch
       burst_switch.checked = false;
       burst = false;
     }
-  })
+  });
 
   function prepCapture(){
      burst == true ? snapPhoto() : takepicture();
