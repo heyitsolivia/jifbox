@@ -6,35 +6,34 @@
   "keywords": ["python", "flask", "gif"],
   "env": {
     "SECRET_KEY": {
-      "description": "A secret key for instance security.",
+      "description": "A secret key for instance security",
       "generator": "secret"
     },
     "ADMIN_PASSWORD": {
-      "description": "The admin login password.",
-      "generator": "secret"
+      "description": "The admin login password, MAKE IT GOOD!"
     },
     "BASIC_PASSWORD": {
-      "description": "Set to require a password to start JIFBOX",
+      "description": "HIGHLY RECOMMENDED If set, password required to use JIFBOX",
       "required": false
     },
     "DROPBOX_KEY": {
-      "description": "Dropbox OAuth app key.",
+      "description": "Dropbox OAuth app key",
       "required": false
     },
     "DROPBOX_SECRET": {
-      "description": "Dropbox OAuth app secret.",
+      "description": "Dropbox OAuth app secret",
       "required": false
     },
     "TUMBLR_KEY": {
-      "description": "Tumblr OAuth app key.",
+      "description": "Tumblr OAuth consumer key",
       "required": false
     },
     "TUMBLR_SECRET": {
-      "description": "Tumblr OAuth app secret.",
+      "description": "Tumblr OAuth consumer secret",
       "required": false
     },
     "TUMBLR_HOSTNAME": {
-      "description": "Full hostname for Tumblr blog: thisismyblog.tumblr.com",
+      "description": "Full hostname for Tumblr blog, example: thisismyblog.tumblr.com",
       "required": false
     }
   },
