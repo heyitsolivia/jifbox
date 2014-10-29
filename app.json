@@ -13,7 +13,7 @@
       "description": "The admin login password, MAKE IT GOOD!"
     },
     "BASIC_PASSWORD": {
-      "description": "HIGHLY RECOMMENDED If set, password required to use JIFBOX",
+      "description": "HIGHLY RECOMMENDED If set, password required to use JIFBOX, must be different from ADMIN_PASSWORD",
       "required": false
     },
     "DROPBOX_KEY": {
