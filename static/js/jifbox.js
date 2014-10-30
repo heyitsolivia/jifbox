@@ -87,7 +87,7 @@
     }
 
     // Quick fix for weird count
-    if (count <= 11) {
+    if (count <= frames) {
       document.querySelector('.photo' + count).setAttribute('src', data);
     }
 
