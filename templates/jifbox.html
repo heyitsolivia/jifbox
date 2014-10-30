@@ -1,29 +1,82 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>jifbox</title>
-    <style>
-      #cnvs { border: 1px solid #999; width: 100px; height: 100px; }
-      #vdo { border: 1px solid #999; width: 100px; height: 100px; }
-      /*#jif { width: 640px; height: 480px; }*/
-      .snaps img { width: 160px; height: 120px; }
-    </style>
-  </head>
-  <body>
-    <div>
-      <input type="checkbox" id="burst-switch" name="burst-switch" class="switch">
-      <label for="burst-switch">Burst mode</label> 
-    </div>
-    <canvas id="cnvs"></canvas>
-    <video id="vdo"></video>
-    <div class="snaps">
-    </div>
-    <p>
-      <button id="snap">SNAP</button>
-    </p>
-    <img src="" id="jif">
-  </body>
-  <script src="/static/gif.js/dist/gif.js"></script>
-  <script src="/static/js/jifbox.js"></script>
+    <link rel="stylesheet" href="static/css/application.css"/>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <img class="logo" src="static/img/logo.svg" alt="jifbox"/>
+        </div>
+    </nav>
+
+    <main class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="controls-group">
+                    <label class="control-label">Burst Mode</label>
+                    <div class="burst-switch">  
+                        <input type="checkbox" value="None" id="burst-switch" name="burst-switch">
+                        <label for="burst-switch"></label>
+                    </div>
+                    <label class="control-label">Manual Mode</label>
+                </div>
+
+            </div>
+
+            <div class="col-sm-8">
+                <div class="video-feed">
+                    <div class="video-msg">
+                        <p>Go ahead and turn on that camera up in the top right there.</p>
+                        <p>Trust us, it'll be worth it.</p>
+                    </div>
+                    <canvas id="cnvs"></canvas>
+                    <video id="vdo"></video>
+                    <div class="finished-jif is-hidden">
+                        <div class="finished-msg">
+                            <span>Excellent work! Go grab this gif from <a href="http://sunfrightgifs.tumblr.com">sunfrightgifs.tumblr.com</a></span>
+                        </div>
+                        <img src="" id="jif">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+                <div class="controls-group">
+                    <label class="control-label">Press Me</label>
+                    <button type="button" id="snap" class="btn btn-snap">
+                        <span class="glyphicon glyphicon-camera"></span>
+                    </button>
+                </div>
+
+                <div class="tip is-hidden">
+                    Ready to make another gif?
+                </div>
+            </div>
+
+        </div>
+
+        </div>
+    </main>
+
+    <footer >
+        <div class="container-fluid">
+                    <div class="row no-gutters">
+            <div class="col-sm-12">
+                <section class="snaps">
+
+                </section>
+            </div>
+        </div>
+    </footer>
+    
+
+
+    <script src="/static/gif.js/dist/gif.js"></script>
+    <script src="/static/js/jifbox.js"></script>
+</body>
 </html>

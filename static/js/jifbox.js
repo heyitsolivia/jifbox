@@ -14,6 +14,7 @@
       width = 320,
       height = 0,
       count = -1,
+      needsReset = false,
 
       // instantiates a new gif object
       gif = new GIF({
@@ -100,6 +101,10 @@
     gif.frames = [];
     gif.running = false;
     uploadGIF(blob);
+    needsReset = true;
+    // show finished gif and tip
+    document.querySelector('.finished-jif').classList.remove('is-hidden');
+    document.querySelector('.tip').classList.remove('is-hidden');
   });
 
   // listens to checkbox for burst mode
@@ -109,8 +114,21 @@
 
   // event listener for the startbutton to take a picture
   startbutton.addEventListener('click', function(ev){
-    prepCapture();
-    ev.preventDefault();
+    if (!needsReset) {
+      prepCapture();
+      ev.preventDefault();
+    } else {
+      // this is a reset click
+      needsReset = false;
+      var i = 0;
+      for (i = 0; i < frames; i++) {
+        document.querySelector('.photo' + i).src = '/static/img/placeholder_frame.png';
+      }
+
+      // hide gif and tip
+      document.querySelector('.finished-jif').classList.add('is-hidden');
+      document.querySelector('.tip').classList.add('is-hidden');
+    }
   }, false);
 
   document.addEventListener('keyup', function(ev){
@@ -136,9 +154,8 @@
   function createFrameEls(){
     for (var i = 0; i < frames; i++){
       var img = document.createElement('img');
-      img.setAttribute('src', 'http://placekitten.com/g/320/240');
+      img.setAttribute('src', '/static/img/placeholder_frame.png');
       img.setAttribute('class', 'photo' + i );
-      img.setAttribute('alt', 'photo');
       document.querySelector('.snaps').appendChild(img);
     }
   }
