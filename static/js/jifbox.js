@@ -15,6 +15,7 @@
       height = 0,
       count = -1,
       needsReset = false,
+      isGiffing = false,
 
       // instantiates a new gif object
       gif = new GIF({
@@ -109,11 +110,21 @@
     // show finished gif and tip
     document.querySelector('.finished-jif').classList.remove('is-hidden');
     document.querySelector('.tip').classList.remove('is-hidden');
+
+    isGiffing = false;
+
+    setTimeout(removeGif, 5000);
+
   });
+
+  function removeGif(){
+    document.querySelector('.finished-jif').classList.add('is-hidden');
+  }
 
   // listens to checkbox for burst mode
   burst_switch.addEventListener('change', function(){
     burst = this.checked;
+    isGiffing = false;
   });
 
   // event listener for the startbutton to take a picture
@@ -150,8 +161,35 @@
     }
   });
 
-  function prepCapture(){
-     burst == true ? snapPhoto() : takepicture();
+  function prepCapture(){    
+    if (!burst || !isGiffing) {
+      isGiffing = true;
+      burst == true ? countdown() : takepicture();
+    }
+  }
+
+  var count_down = 5
+
+  function countdown(){
+    var msg = document.querySelector('.video-msg');
+    msg.style.fontSize="26px";
+    msg.style.padding="10px";
+    msg.style.zIndex="999";
+    msg.style.backgroundColor="black";
+
+
+    if (count_down > 0 ) {
+      msg.innerHTML = count_down;
+      count_down--;
+      setTimeout(countdown, 700)
+    } else {
+      count_down = 5;
+      msg.style.fontSize="16px";
+      msg.style.padding="75px";
+      msg.style.zIndex="1";
+      msg.style.backgroundColor="rgba(0,0,0,0.5)";
+      snapPhoto();
+    }
   }
 
   // creates the img frames
