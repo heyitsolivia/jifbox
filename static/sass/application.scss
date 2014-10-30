@@ -125,6 +125,9 @@ footer {
     bottom: 0;
     width: 100%;
     margin: auto;
+    white-space: nowrap;
+    height: 150px;
+    overflow-x: scroll;
 }
 .snaps [class^="photo"],
 .snaps [class*=" photo"] {
@@ -270,4 +273,13 @@ footer {
 @-webkit-keyframes bounce {
     0%, 100%   { top: 0; }
     50%  { top: -8px; }
+}
+
+::-webkit-scrollbar {
+    background: black;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(98,98,98,0.8);
 }

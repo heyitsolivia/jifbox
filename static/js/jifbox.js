@@ -86,15 +86,19 @@
       snapPhoto();
     }
 
-    count = count % frames;
+    // Quick fix for weird count
+    if (count <= 11) {
+      document.querySelector('.photo' + count).setAttribute('src', data);
+    }
 
-    document.querySelector('.photo' + count).setAttribute('src', data);
     gif.addFrame(document.querySelector('.photo' + count), {delay: frame_delay});
+    count = count % frames;
   }
 
   // Timer to call takepicture() when app is in burst mode
   function snapPhoto(){
-    if (count < frames){
+    if (count < frames ){
+      console.log(count)
       setTimeout(takepicture, snap_delay);
     }
   }
