@@ -168,7 +168,7 @@
     if (count_down > 0 ) {
       msg.innerHTML = count_down;
       count_down--;
-      setTimeout(countdown, snap_delay)
+      setTimeout(countdown, 700)
     } else {
       count_down = 5;
       msg.style.fontSize="16px";
