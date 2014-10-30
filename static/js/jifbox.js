@@ -15,6 +15,7 @@
       height = 0,
       count = -1,
       needsReset = false,
+      isGiffing = false,
 
       // instantiates a new gif object
       gif = new GIF({
@@ -105,7 +106,10 @@
     document.querySelector('.finished-jif').classList.remove('is-hidden');
     document.querySelector('.tip').classList.remove('is-hidden');
 
+    isGiffing = false;
+
     setTimeout(removeGif, 5000);
+
   });
 
   function removeGif(){
@@ -115,6 +119,7 @@
   // listens to checkbox for burst mode
   burst_switch.addEventListener('change', function(){
     burst = this.checked;
+    isGiffing = false;
   });
 
   // event listener for the startbutton to take a picture
@@ -151,8 +156,11 @@
     }
   });
 
-  function prepCapture(){
-     burst == true ? countdown() : takepicture();
+  function prepCapture(){    
+    if (!burst || !isGiffing) {
+      isGiffing = true;
+      burst == true ? countdown() : takepicture();
+    }
   }
 
   var count_down = 5
