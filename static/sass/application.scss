@@ -23,6 +23,7 @@ main {
   margin: 0 auto -60px;
   padding: 0 0 60px;
 }
+
 .navbar-default {
     background-image: url(../img/pattern_photography_light.png);
     color: #ddd;
@@ -35,12 +36,19 @@ main {
     padding-bottom: 10px;
 }
 
-
 .video-feed {
     position: relative;
     margin: auto;
     width: 100%;
     height: 100%;
+}
+
+.overlay-flash {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: absolute;
+    z-index: 6;
 }
 
 .video-msg {

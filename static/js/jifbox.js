@@ -67,11 +67,17 @@
   // adds img to gif frame
   // (could benefit from getting refactored into multiple single responsibility functions)
   function takepicture(){
+    console.log('called')
     canvas.width = width;
     canvas.height = height;
     canvas.getContext('2d').drawImage(video, 0, 0, width, height);
     var data = canvas.toDataURL('image/png');
-    
+    // flash after every frame
+    document.querySelector('.overlay-flash').classList.remove('is-hidden');
+    setTimeout(function(){
+      console.log("called in timeout")
+      document.querySelector('.overlay-flash').classList.add('is-hidden');
+    }, 75);
 
     count++;
     if ( count === frames ) {
