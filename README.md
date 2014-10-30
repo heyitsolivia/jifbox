@@ -1,3 +1,5 @@
+![jifbox logo](http://assets.sunlightfoundation.com.s3.amazonaws.com/projects/jifbox/logo.png)
+
 # JIFBOX
 
 *Pronounced GIF-box*

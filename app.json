@@ -2,7 +2,7 @@
   "name": "JIFBOX",
   "description": "A GIF photobooth. Pronounced GIF-box.",
   "repository": "https://github.com/sunlightlabs/jifbox",
-  "logo": "https://node-js-sample.herokuapp.com/node.svg",
+  "logo": "http://assets.sunlightfoundation.com.s3.amazonaws.com/projects/jifbox/logo.svg",
   "keywords": ["python", "flask", "gif"],
   "env": {
     "SECRET_KEY": {
