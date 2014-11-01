@@ -32,6 +32,8 @@ Upload generated GIFs to a Dropbox folder. Requires **DROPBOX_KEY** and **DROPBO
 
 Post generated GIFs to a Tumblr blog. Requires **TUMBLR_KEY**, **TUMBLR_SECRET**, and **TUMBLR_HOSTNAME** to be set and Tumblr to be connected via */settings*. You can get these values by registering an app for the [Tumblr API](https://www.tumblr.com/docs/en/api/v2).
 
+In the Tumblr API app settings set the Default callback URL to `http://[project_domain_name]/settings/tumblr/callback`
+
 ## Settings
 
 Basic app configuration is done via environment variables. Additional settings for customizing the app are available at *http://\<your jifbox domain\>/settings*.
