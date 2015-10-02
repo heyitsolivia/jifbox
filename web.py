@@ -33,7 +33,7 @@ DEFAULT_SETTINGS = {
 # MongoDB configuration
 #
 
-mongo_url = os.environ.get('MONGOHQ_URL', 'mongodb://localhost:27017/jifbox')
+mongo_url = os.environ.get('MONGOLAB_URI')
 mongo_conn = MongoClient(mongo_url)
 
 mongo_params = urlparse(mongo_url)
