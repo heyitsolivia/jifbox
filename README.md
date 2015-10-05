@@ -43,7 +43,7 @@ Basic app configuration is done via environment variables. Additional settings f
 | Variable | Description |
 |----------|-------------|
 | ADMIN_PASSWORD | Password used for access to */settings* |
-| MONGOHQ_URL | Heroku-style URL for MongoDB configuration |
+| MONGOLAB_URI | Heroku-style URL for MongoDB configuration |
 | SECRET_KEY | String used to sign cookies and other security related things |
 
 #### Optional
