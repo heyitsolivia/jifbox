@@ -22,6 +22,7 @@ BASIC_PASSWORD = os.environ.get('BASIC_PASSWORD')
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+
 DEFAULT_SETTINGS = {
     'frame_delay': 255,
     'frames': 10,
@@ -33,7 +34,7 @@ DEFAULT_SETTINGS = {
 # MongoDB configuration
 #
 
-mongo_url = os.environ.get('MONGOLAB_URI')
+mongo_url = os.environ.get('MONGOHQ_URL')
 mongo_conn = MongoClient(mongo_url)
 
 mongo_params = urlparse(mongo_url)
@@ -43,6 +44,7 @@ mongo = mongo_conn[mongo_params.path.strip('/')]
 if mongo_params.username and mongo_params.password:
     mongo.authenticate(mongo_params.username, mongo_params.password)
 
+tumblr_host = os.environ.get('TUMBLR_HOSTNAME')
 
 #
 # services
@@ -309,7 +311,8 @@ def logout():
 @app.route('/')
 @login_maybe_required
 def index():
-    return render_template('jifbox.html')
+    context = {'tumblr_host': tumblr_host}
+    return render_template('jifbox.html', **context)
 
 
 @app.route('/giffed', methods=['POST'])
