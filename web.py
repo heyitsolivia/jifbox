@@ -36,8 +36,6 @@ DEFAULT_SETTINGS = {
 mongo_url = os.environ.get('MONGOHQ_URL')
 mongo_conn = MongoClient(mongo_url)
 
-print(mongo_url)
-
 mongo_params = urlparse(mongo_url)
 
 mongo = mongo_conn[mongo_params.path.strip('/')]
