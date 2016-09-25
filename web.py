@@ -312,7 +312,7 @@ def logout():
 @login_maybe_required
 def index():
     context = {'tumblr_host': tumblr_host}
-    return render_template('jifbox.html' **context)
+    return render_template('jifbox.html', **context)
 
 
 @app.route('/giffed', methods=['POST'])
